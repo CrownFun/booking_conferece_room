@@ -3,6 +3,7 @@ package pl.filewicz.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.filewicz.api.RoomDto;
+import pl.filewicz.exceptions.CreateFormFormatException;
 import pl.filewicz.exceptions.DuplicateRoomException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// DuplicateRoomNameException
 
 @Service
 public class RoomController {
@@ -31,7 +31,11 @@ public class RoomController {
             throw new DuplicateRoomException();
         });
 
-        roomRepository.save(room);
+        try {
+            roomRepository.save(room);
+        } catch (Exception e) {
+            throw new CreateFormFormatException();
+        }
 
         return RoomMapper.toDto(room);
     }
