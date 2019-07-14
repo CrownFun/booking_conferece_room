@@ -18,8 +18,12 @@ import java.util.List;
 
 public class BookingControllerRest {
 
-    @Autowired
     private BookingController bookingController;
+
+    @Autowired
+    public BookingControllerRest(BookingController bookingController) {
+        this.bookingController = bookingController;
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookingDto> bookingRoom(@RequestBody BookingDto bookingDto) {

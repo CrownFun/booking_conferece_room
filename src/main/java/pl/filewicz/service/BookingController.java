@@ -14,13 +14,11 @@ import pl.filewicz.model.User;
 import pl.filewicz.repository.BookingRepository;
 import pl.filewicz.repository.RoomRepository;
 import pl.filewicz.repository.UserRepository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//delete booking ?
 
 @Service
 public class BookingController {
@@ -83,9 +81,6 @@ public class BookingController {
         return isAvailable;
     }
 
-    public void deleteBooking(Long id) {
-        bookingRepository.deleteById(id);
-    }
 
     public Optional<Booking> findBookingByUser(User user) {
         return bookingRepository.findByUser(user);

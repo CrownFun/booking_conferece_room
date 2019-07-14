@@ -1,12 +1,16 @@
 package pl.filewicz.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import pl.filewicz.api.RoomDto;
+import pl.filewicz.exceptions.AdministratorSecurityException;
 import pl.filewicz.exceptions.CreateFormFormatException;
 import pl.filewicz.exceptions.DuplicateRoomException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
+import pl.filewicz.model.User;
 import pl.filewicz.repository.RoomRepository;
 
 import java.util.List;
@@ -15,17 +19,20 @@ import java.util.stream.Collectors;
 
 
 @Service
+@PropertySource("classpath:application.properties")
 public class RoomController {
 
     private RoomRepository roomRepository;
+    private Environment environment;
 
     @Autowired
-    public RoomController(RoomRepository roomRepository) {
+    public RoomController(RoomRepository roomRepository, Environment environment) {
         this.roomRepository = roomRepository;
+        this.environment = environment;
     }
 
     public RoomDto createNewRoom(Room room) {
-
+        checkAdminPassword(room);
         Optional<Room> roomByName = roomRepository.findByName(room.getName());
         roomByName.ifPresent(room1 -> {
             throw new DuplicateRoomException();
@@ -48,11 +55,14 @@ public class RoomController {
         return roomRepository.findByName(name);
     }
 
-    public void deleteRoom(Room room) {
-        roomRepository.deleteById(room.getId());
+    public void deleteRoom(String name, Room room) {
+        checkAdminPassword(room);
+        Optional<Room> roomByName = roomRepository.findByName(name);
+        roomByName.ifPresent(room1 -> roomRepository.deleteById(room1.getId()));
     }
 
     public void updateRoom(String roomName, Room room) {
+        checkAdminPassword(room);
         Optional<Room> roomByName = roomRepository.findByName(roomName);
         roomByName.ifPresent(room1 -> {
             room1.setName(room.getName());
@@ -65,4 +75,18 @@ public class RoomController {
 
     }
 
+    private boolean adminPasswordValidate(Room room) {
+        boolean isValid = false;
+        String adminPass = environment.getProperty("messageFileProperty");
+        if (room.getAdminPassword() == null || !room.getAdminPassword().equals(adminPass)) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+    private void checkAdminPassword(Room room) {
+        if (adminPasswordValidate(room)) {
+            throw new AdministratorSecurityException();
+        }
+    }
 }

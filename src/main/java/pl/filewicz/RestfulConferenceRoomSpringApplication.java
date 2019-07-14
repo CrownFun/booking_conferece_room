@@ -19,7 +19,8 @@ import java.util.List;
 // refactoring, nazwy zmiennych, metod, klas
 // private/public
 // unusedimport
-
+// store pass i secure way
+// save start data in secure way!
 @SpringBootApplication
 public class RestfulConferenceRoomSpringApplication {
 
@@ -36,19 +37,6 @@ public class RestfulConferenceRoomSpringApplication {
         bookingController.createNewBooking(bookingDto);
         bookingController.createNewBooking(bookingDto2);
         bookingController.createNewBooking(bookingDto3);
-
-        List<BookingDto> aaa = bookingController.gettingBookingScheduleForAllRooms(DateMapper.toLocalDateTime("2016-11-09 10:30"), DateMapper.toLocalDateTime("2017-11-09 10:30"));
-
-        List<BookingDto> bbb = bookingController.gettingBookingScheduleForSingleRoom("Small", DateMapper.toLocalDateTime("2016-11-08 10:30"), DateMapper.toLocalDateTime("2016-12-05 10:30"));
-
-        List<BookingDto> ccc = bookingController.gettingBookingSchduleForUser("jdoe", DateMapper.toLocalDateTime("2016-11-09 10:30"), DateMapper.toLocalDateTime("2017-11-09 10:30"));
-
-
-        // otwarta data - dla ułatwienia tylko bez koncowej, - zaimplementowac!
-
-
-//        BookingDto bookingDto4 = new BookingDto("jsmith", "Small", "2016-12-01 10:30", "2016-12-04 10:30");
-//        bookingController.createNewBooking(bookingDto4);
 
 
     }

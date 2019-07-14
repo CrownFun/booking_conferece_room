@@ -4,8 +4,6 @@ package pl.filewicz.model;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,6 +20,8 @@ public class User {
     @Length(min = 6)
     @Column(length = 100, nullable = false)
     private String password;
+    @Transient
+    private String adminPassword;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Booking> bookings;
 
@@ -84,14 +84,7 @@ public class User {
         this.bookings = bookings;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public String getAdminPassword() {
+        return adminPassword;
     }
 }

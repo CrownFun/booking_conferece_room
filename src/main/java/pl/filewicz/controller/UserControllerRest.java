@@ -38,7 +38,6 @@ public class UserControllerRest {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> saveUser(@RequestBody User user) {
         UserDto userSaved = userController.createNewUser(user);
-
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{login}")
@@ -49,14 +48,14 @@ public class UserControllerRest {
     }
 
     @DeleteMapping("/{login}")
-    public void deleteUser(@PathVariable String login) {
-        userController.getUser(login).ifPresent(user -> userController.deleteUser(user));
+    public void deleteUser(@PathVariable String login, @RequestBody User user) {
+        userController.deleteUser(login, user);
     }
 
     @PutMapping("/{login}")
     public void updateUser(@PathVariable String login, @RequestBody User user) {
         if (!login.equals(user.getLogin())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aktualizowany obiekt musi mieć login zgodny z loginem w ścieżce zasobu");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The updated object must have a login that matches the login in the resource path");
         }
         userController.updateUser(login, user);
     }

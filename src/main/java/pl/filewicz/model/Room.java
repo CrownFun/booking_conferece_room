@@ -22,6 +22,8 @@ public class Room {
     private boolean projector;
     @Column(length = 100)
     private String phone_number;
+    @Transient
+    private String adminPassword;
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Booking> bookings;
 
@@ -94,5 +96,9 @@ public class Room {
 
     public void addBooking(Booking booking) {
         bookings.add(booking);
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
     }
 }
