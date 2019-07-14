@@ -46,14 +46,14 @@ public class RoomControllerRest {
 
     @DeleteMapping("/{name}")
     public void deleteRoom(@PathVariable String name, @RequestBody Room room) {
-
-        roomController.deleteRoom(name, room);
+        String roomName = name + " Room";
+        roomController.deleteRoom(roomName, room);
     }
 
     @PutMapping("/{name}")
     public void updateRoom(@PathVariable String name, @RequestBody Room room) {
-
-        if (!name.equals(room.getName())) {
+        String roomName = name + " Room";
+        if (!roomName.equals(room.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The updated object must have a name that matches the name in the resource path");
         }
         roomController.updateRoom(name, room);
