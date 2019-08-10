@@ -4,178 +4,129 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.filewicz.api.BookingDto;
-import pl.filewicz.api.RoomDto;
-import pl.filewicz.api.UserDto;
-import pl.filewicz.mapper.DateMapper;
-import pl.filewicz.model.Booking;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import pl.filewicz.model.Room;
 import pl.filewicz.model.User;
-import pl.filewicz.service.BookingController;
-import pl.filewicz.service.RoomController;
-import pl.filewicz.service.UserController;
+import pl.filewicz.repository.UserRepository;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
-import java.util.List;
+// put in separate database!
 
-import static org.junit.Assert.*;
-
-// testowanie REST!!
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = RestfulConferenceRoomSpringApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RestfulConferenceRoomSpringApplicationTests {
 
     @Autowired
-    private UserController userController;
+    private TestRestTemplate testRestTemplate;
+
 
     @Autowired
-    private RoomController roomController;
+    private UserRepository userRepository;
 
-    @Autowired
-    private BookingController bookingController;
+
+    private final String rootUrl = "http://localhost:8080/api";
+
 
     @Test
-    public void createNewUser() {
-        User user2 = new User();
-        user2.setName("John");
-        user2.setSurname("Rambo");
-        user2.setLogin("jrambo");
-        user2.setPassword("strongPass2");
+    public void testCreateNewUser() {
+        User user = new User("Thomas", "Burton", "tbarton", "uncracable");
+        user.setAdminPassword("q1w2e3r4");
+        ResponseEntity<User> postResponse = testRestTemplate.postForEntity(rootUrl + "/users", user, User.class);
+        HttpStatus createdCode = HttpStatus.CREATED;
+        assertEquals(postResponse.getStatusCode(), createdCode);
+        assertNotNull(postResponse);
 
-        userController.createNewUser(user2);
-
-        User userFound = userController.getUser("jrambo").get();
-
-        assertEquals(userFound.getSurname(), "Rambo");
     }
 
     @Test
-    public void getAllUsers() {
-        List<UserDto> users = userController.getAllUsers();
-        System.out.println(users);
-        assertTrue(users.size() > 1);
+    public void testGetAllUsers() {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+        ResponseEntity<String> response = testRestTemplate.exchange(rootUrl + "/users",
+                HttpMethod.GET, entity, String.class);
+        assertNotNull(response);
     }
 
     @Test
-    public void updateUser() {
-        User userBefore = userController.getUser("jdoe").get();
-        userBefore.setName("Robert");
-        userController.createNewUser(userBefore);
-        User userAfter = userController.getUser("jdoe").get();
-        assertEquals(userAfter.getName(), "Robert");
+    public void testUpdateUser() {
+
+        User user = new User("Anne", "Green", "agreen", "ExampleTestPass");
+        user.setAdminPassword("q1w2e3r4");
+        testRestTemplate.postForEntity(rootUrl + "/users", user, User.class);
+        User userFound = testRestTemplate.getForObject(rootUrl + "/users/agreen", User.class);
+        userFound.setName("Ellen");
+        userFound.setPassword(user.getPassword());
+        userFound.setAdminPassword("q1w2e3r4");
+        testRestTemplate.put(rootUrl + "/users/agreen", userFound);
+        User updatedUserFound = testRestTemplate.getForObject(rootUrl + "/users/agreen", User.class);
+        assertEquals(userFound.getName(), updatedUserFound.getName());
+
+    }
+
+    @Test
+    public void testDeleteUser() {
+        User user = new User();
+        user.setAdminPassword("q1w2e3r4");
+        testRestTemplate.delete(rootUrl + "/users/agreen", user);
+
+        try {
+            testRestTemplate.getForObject(rootUrl + "/users/agreen", User.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Test
+    public void testCreateNewRoom() {
+        Room room = new Room("Example Room", "10th floor", 15, true, "33-22-11-22");
+        room.setAdminPassword("q1w2e3r4");
+        ResponseEntity<Room> postResponse = testRestTemplate.postForEntity(rootUrl + "/rooms", room, Room.class);
+        HttpStatus createdStatus = HttpStatus.CREATED;
+        assertEquals(createdStatus, postResponse.getStatusCode());
+        assertNotNull(postResponse);
     }
 
 
-//    @Test
-//    public void deleteUserWithoutAnyRelations() {
-//        userController.deleteUser(userController.getUser("jrambo").get());
-//        User userFound = userController.getUser("jrambo").get();
-//        assertNull(userFound);
-//    }
+    @Test
+    public void testGetAllRooms() {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+        ResponseEntity<String> response = testRestTemplate.exchange(rootUrl + "/rooms",
+                HttpMethod.GET, entity, String.class);
+        assertNotNull(response);
+    }
 
     @Test
-    public void createNewRoom() {
+    public void testUpdateRoom() {
+        Room room = new Room("Coffe Room", "12th floor", 26, false, "33-22-11-99");
+        room.setAdminPassword("q1w2e3r4");
+        testRestTemplate.postForEntity(rootUrl + "/rooms", room, Room.class);
+        Room roomFound = testRestTemplate.getForObject(rootUrl + "/rooms/Coffe Room", Room.class);
+        roomFound.setAdminPassword("q1w2e3r4");
+        roomFound.setLocation_description("2nd floor");
+        testRestTemplate.put(rootUrl + "/rooms/Coffe", roomFound);
+        Room updatedRoomFound = testRestTemplate.getForObject(rootUrl + "/rooms/Coffe Room", Room.class);
+        assertEquals(roomFound.getLocation_description(), updatedRoomFound.getLocation_description());
 
-        final String roomName = "jedynka";
+    }
 
+    @Test
+    public void testDeleteRoom() {
         Room room = new Room();
-        room.setName(roomName);
-        room.setLocation_description("pierwsze piętro, sala nr 5");
-        room.setNumber_of_seats(34);
-        room.setProjector(true);
-        room.setPhone_number("222-222-333");
-        roomController.createNewRoom(room);
-
-        Room roomFound = roomController.getRoom(roomName).get();
-
-        assertEquals(roomName, roomFound.getName());
+        room.setAdminPassword("q1w2e3r4");
+        testRestTemplate.delete(rootUrl + "/rooms/Coffe", room);
+        try {
+            testRestTemplate.getForObject(rootUrl + "/rooms/Coffe", Room.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+        }
     }
-
-    @Test
-    public void getAllRooms() {
-        List<RoomDto> rooms = roomController.getRooms();
-        assertTrue(rooms.size() > 1);
-    }
-
-    @Test
-    public void updateRoom() {
-        Room roomBefore = roomController.getRoom("Large").get();
-        roomBefore.setPhone_number("999-999-999");
-        roomController.createNewRoom(roomBefore);
-        Room roomAfter = roomController.getRoom("Large").get();
-        assertEquals(roomAfter.getPhone_number(), "999-999-999");
-    }
-
-//    @Test
-//    public void deleteRoomWithOutAnyRelations() {
-//        roomController.deleteRoom(roomController.getRoom("jedynka").get());
-//        Room roomFound = roomController.getRoom("jedynka").get();
-//        assertNull(roomFound);
-//    }
-
-    @Test
-    public void bookingConferenceRoom() {
-
-        BookingDto bookingDto = new BookingDto("jdoe", "Small", "2016-11-09 10:30", "2016-11-11 10:30");
-
-        bookingController.createNewBooking(bookingDto);
-
-        Booking bookingFound = bookingController.findBookingByUser(userController.getUser("jdoe").get()).get();
-
-        assertEquals(bookingFound.getUser().getLogin(), "jdoe");
-        assertEquals(bookingFound.getRoom().getName(), "Small");
-    }
-
-    @Test
-    public void getListOfAllBookingsForAParticularTimeFrame() {
-
-        BookingDto bookingDto = new BookingDto("jsmith", "Large", "2017-01-01 10:30", "2017-01-30 10:30");
-        BookingDto bookingDto2 = new BookingDto("jsmith", "Small", "2017-02-01 10:30", "2017-02-28 10:30");
-        bookingController.createNewBooking(bookingDto);
-        bookingController.createNewBooking(bookingDto2);
-
-        List<BookingDto> bookings = bookingController.gettingBookingScheduleForAllRooms(DateMapper.toLocalDateTime("2017-01-01 10:30"), DateMapper.toLocalDateTime("2017-02-28 10:30"));
-
-        assertEquals(2, bookings.size());
-
-    }
-
-    @Test
-    public void getListOfAllBookingsForSingleRoomAndParticularTimeFrame() {
-
-        BookingDto bookingDto = new BookingDto("jsmith", "Medium", "2017-01-01 10:30", "2017-01-30 10:30");
-        BookingDto bookingDto2 = new BookingDto("wblack", "Medium", "2017-02-01 10:30", "2017-02-28 10:30");
-        BookingDto bookingDto3 = new BookingDto("wblack", "Small", "2017-02-01 10:30", "2017-02-28 10:30");
-
-
-        bookingController.createNewBooking(bookingDto);
-        bookingController.createNewBooking(bookingDto2);
-        bookingController.createNewBooking(bookingDto3);
-
-        List<BookingDto> bookings = bookingController.gettingBookingScheduleForSingleRoom("Medium", DateMapper.toLocalDateTime("2017-01-01 09:30"), DateMapper.toLocalDateTime("2017-02-28 11:30"));
-
-        assertEquals(2, bookings.size());
-        assertEquals("Medium", bookings.get(0).getRoomName());
-    }
-
-    @Test
-    public void getListOfAllBookingsForUserAndParticularTimeFrame() {
-
-        BookingDto bookingDto = new BookingDto("jsmith", "Medium", "2017-01-01 10:30", "2017-01-30 10:30");
-        BookingDto bookingDto2 = new BookingDto("wblack", "Large", "2019-08-01 10:30", "2019-08-30 10:30");
-        BookingDto bookingDto3 = new BookingDto("wblack", "Small", "2019-09-01 10:30", "2019-09-30 10:30");
-
-        bookingController.createNewBooking(bookingDto);
-        bookingController.createNewBooking(bookingDto2);
-        bookingController.createNewBooking(bookingDto3);
-
-        List<BookingDto> bookings = bookingController.gettingBookingSchduleForUser("wblack", DateMapper.toLocalDateTime("2019-08-01 10:30"), DateMapper.toLocalDateTime("2019-10-01 10:30"));
-
-        assertEquals(2, bookings.size());
-        assertEquals("wblack", bookings.get(0).getUserLogin());
-    }
-
-
 }
