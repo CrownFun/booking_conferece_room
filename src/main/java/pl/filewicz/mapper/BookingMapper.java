@@ -4,7 +4,6 @@ package pl.filewicz.mapper;
 import pl.filewicz.api.BookingDto;
 import pl.filewicz.model.Booking;
 
-import java.util.List;
 
 public class BookingMapper {
 

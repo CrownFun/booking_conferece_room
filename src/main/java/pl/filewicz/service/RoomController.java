@@ -8,9 +8,9 @@ import pl.filewicz.api.RoomDto;
 import pl.filewicz.exceptions.AdministratorSecurityException;
 import pl.filewicz.exceptions.CreateFormFormatException;
 import pl.filewicz.exceptions.DuplicateRoomException;
+import pl.filewicz.exceptions.RoomNotFoundException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
-import pl.filewicz.model.User;
 import pl.filewicz.repository.RoomRepository;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class RoomController {
 
     private RoomRepository roomRepository;
-    private Environment environment;
+    private Environment environment; // do czego to jest??
 
     @Autowired
     public RoomController(RoomRepository roomRepository, Environment environment) {
@@ -62,15 +62,16 @@ public class RoomController {
     }
 
     public void updateRoom(String roomName, Room room) {
-        checkAdminPassword(room);
         Optional<Room> roomByName = roomRepository.findByName(roomName);
-        roomByName.ifPresent(room1 -> {
+        roomByName.ifPresentOrElse(room1 -> {
             room1.setName(room.getName());
             room1.setLocation_description(room.getLocation_description());
             room1.setProjector(room.isProjector());
             room1.setNumber_of_seats(room.getNumber_of_seats());
             room1.setPhone_number(room.getPhone_number());
             roomRepository.save(room1);
+        }, () -> {
+            throw new RoomNotFoundException();
         });
 
     }

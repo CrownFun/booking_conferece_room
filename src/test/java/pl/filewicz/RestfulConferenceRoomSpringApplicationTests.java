@@ -8,7 +8,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import pl.filewicz.model.Room;
 import pl.filewicz.model.User;
 import pl.filewicz.repository.UserRepository;
@@ -16,8 +15,6 @@ import pl.filewicz.repository.UserRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
-// put in separate database!
 
 
 @RunWith(SpringRunner.class)

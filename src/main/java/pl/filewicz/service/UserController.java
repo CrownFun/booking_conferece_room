@@ -6,10 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.filewicz.api.UserDto;
-import pl.filewicz.exceptions.AdministratorSecurityException;
-import pl.filewicz.exceptions.CreateFormFormatException;
-import pl.filewicz.exceptions.DuplicateUserException;
-import pl.filewicz.exceptions.UserPasswordRequirementsException;
+import pl.filewicz.exceptions.*;
 import pl.filewicz.mapper.UserMapper;
 import pl.filewicz.model.User;
 import pl.filewicz.repository.UserRepository;
@@ -72,12 +69,14 @@ public class UserController {
     public void updateUser(String login, User user) {
         checkAdminPassword(user);
         Optional<User> userByLogin = userRepository.findByLogin(login);
-        userByLogin.ifPresent(user2 -> {
+        userByLogin.ifPresentOrElse(user2 -> {
                     user2.setName(user.getName());
                     user2.setSurname(user.getSurname());
                     user2.setPassword(user.getPassword());
                     user2.setLogin(user.getLogin());
                     userRepository.save(user2);
+                }, () -> {
+                    throw new UserNotFoundException();
                 }
         );
     }

@@ -1,6 +1,5 @@
 package pl.filewicz.mapper;
 
-import org.springframework.stereotype.Service;
 import pl.filewicz.api.UserDto;
 import pl.filewicz.model.User;
 

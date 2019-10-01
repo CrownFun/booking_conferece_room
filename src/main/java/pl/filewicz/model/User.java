@@ -2,7 +2,6 @@ package pl.filewicz.model;
 
 
 import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -86,5 +85,9 @@ public class User {
 
     public String getAdminPassword() {
         return adminPassword;
+    }
+
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
     }
 }

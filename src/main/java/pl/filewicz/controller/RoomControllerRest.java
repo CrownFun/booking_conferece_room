@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.api.RoomDto;
+import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
 import pl.filewicz.service.RoomController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -44,6 +46,17 @@ public class RoomControllerRest {
         return roomController.getRooms();
     }
 
+    @GetMapping(value = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RoomDto> getRoomByName(@PathVariable String name) {
+        Optional<Room> roomFound = roomController.getRoom(name.trim());
+        if (roomFound.isPresent()) {
+            return ResponseEntity.ok(RoomMapper.toDto(roomFound.get()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @DeleteMapping("/{name}")
     public void deleteRoom(@PathVariable String name, @RequestBody Room room) {
         String roomName = name + " Room";
@@ -56,7 +69,7 @@ public class RoomControllerRest {
         if (!roomName.equals(room.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The updated object must have a name that matches the name in the resource path");
         }
-        roomController.updateRoom(name, room);
+        roomController.updateRoom(roomName, room);
     }
 
 }

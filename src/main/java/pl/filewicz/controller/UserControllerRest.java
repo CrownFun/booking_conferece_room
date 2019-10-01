@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.api.UserDto;
+import pl.filewicz.mapper.UserMapper;
 import pl.filewicz.service.UserController;
 import pl.filewicz.model.User;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 
 // requestparam vs requestbody vs pathvariable
@@ -34,6 +36,17 @@ public class UserControllerRest {
     public List<UserDto> getUsers() {
         return userController.getAllUsers();
     }
+
+    @GetMapping(value = "/{login}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> getUserByLogin(@PathVariable String login) {
+        Optional<User> user = userController.getUser(login);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(UserMapper.toDto(user.get()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> saveUser(@RequestBody User user) {
