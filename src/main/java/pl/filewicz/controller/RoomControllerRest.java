@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.api.RoomDto;
+import pl.filewicz.exceptions.RoomNotFoundException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
 import pl.filewicz.service.RoomController;
@@ -28,7 +29,7 @@ public class RoomControllerRest {
         this.roomController = roomController;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<RoomDto> saveRoom(@RequestBody Room room) {
 
         RoomDto roomSaved = roomController.createNewRoom(room);
@@ -41,19 +42,21 @@ public class RoomControllerRest {
         return ResponseEntity.created(location).body(roomSaved);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    //localhost:8080/api/rooms
+    @GetMapping
     public List<RoomDto> getRooms() {
         return roomController.getRooms();
     }
 
-    @GetMapping(value = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    localhost:8080/api/rooms/Large room
+    @GetMapping("/{name}")
     public ResponseEntity<RoomDto> getRoomByName(@PathVariable String name) {
         Optional<Room> roomFound = roomController.getRoom(name.trim());
-        if (roomFound.isPresent()) {
-            return ResponseEntity.ok(RoomMapper.toDto(roomFound.get()));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return roomFound.map(room -> ResponseEntity.ok(RoomMapper.toDto(room)))
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+                    .orElseThrow(() -> {
+                        throw new RoomNotFoundException();
+                    });
     }
 
 
@@ -71,5 +74,4 @@ public class RoomControllerRest {
         }
         roomController.updateRoom(roomName, room);
     }
-
 }

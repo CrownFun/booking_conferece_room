@@ -40,11 +40,7 @@ public class UserControllerRest {
     @GetMapping(value = "/{login}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> getUserByLogin(@PathVariable String login) {
         Optional<User> user = userController.getUser(login);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(UserMapper.toDto(user.get()));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return user.map(value -> ResponseEntity.ok(UserMapper.toDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
