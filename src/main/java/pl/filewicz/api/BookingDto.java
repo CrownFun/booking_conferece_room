@@ -1,5 +1,12 @@
 package pl.filewicz.api;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class BookingDto {
 
     private String userLogin;
@@ -24,57 +31,4 @@ public class BookingDto {
         this.startBooking = startBooking;
         this.endBooking = endBooking;
     }
-
-    public BookingDto() {
-    }
-
-    public String getUserLogin() {
-        return userLogin;
-    }
-
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public String getStartBooking() {
-        return startBooking;
-    }
-
-    public void setStartBooking(String startBooking) {
-        this.startBooking = startBooking;
-    }
-
-    public String getEndBooking() {
-        return endBooking;
-    }
-
-    public void setEndBooking(String endBooking) {
-        this.endBooking = endBooking;
-    }
-
-    public String getUserSurname() {
-        return userSurname;
-    }
-
-    public void setUserSurname(String userSurname) {
-        this.userSurname = userSurname;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-
 }

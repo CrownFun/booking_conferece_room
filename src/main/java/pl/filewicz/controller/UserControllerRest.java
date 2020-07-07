@@ -1,50 +1,46 @@
 package pl.filewicz.controller;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.api.UserDto;
 import pl.filewicz.mapper.UserMapper;
-import pl.filewicz.service.UserController;
 import pl.filewicz.model.User;
+import pl.filewicz.service.UserController;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-
-// requestparam vs requestbody vs pathvariable
-
 @RestController
 @RequestMapping("api/users")
+@RequiredArgsConstructor
 public class UserControllerRest {
 
+    private final UserController userController;
 
-    private UserController userController;
-
-    @Autowired
-    public UserControllerRest(UserController userController) {
-        this.userController = userController;
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<UserDto> getUsers() {
         return userController.getAllUsers();
     }
 
-    @GetMapping(value = "/{login}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{login}")
     public ResponseEntity<UserDto> getUserByLogin(@PathVariable String login) {
         Optional<User> user = userController.getUser(login);
         return user.map(value -> ResponseEntity.ok(UserMapper.toDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<UserDto> saveUser(@RequestBody User user) {
         UserDto userSaved = userController.createNewUser(user);
         URI location = ServletUriComponentsBuilder
@@ -53,7 +49,6 @@ public class UserControllerRest {
                 .buildAndExpand(userSaved.getLogin())
                 .toUri();
         return ResponseEntity.created(location).body(userSaved);
-
     }
 
     @DeleteMapping("/{login}")
@@ -68,6 +63,4 @@ public class UserControllerRest {
         }
         userController.updateUser(login, user);
     }
-
-
 }

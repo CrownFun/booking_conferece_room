@@ -1,5 +1,6 @@
 package pl.filewicz.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -20,16 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 @PropertySource("classpath:application.properties")
+@RequiredArgsConstructor
 public class RoomController {
 
-    private RoomRepository roomRepository;
-    private Environment environment; // do czego to jest??
-
-    @Autowired
-    public RoomController(RoomRepository roomRepository, Environment environment) {
-        this.roomRepository = roomRepository;
-        this.environment = environment;
-    }
+    private final RoomRepository roomRepository;
+    private final Environment environment;
 
     public RoomDto createNewRoom(Room room) {
         checkAdminPassword(room);
@@ -43,7 +39,6 @@ public class RoomController {
         } catch (Exception e) {
             throw new CreateFormFormatException();
         }
-
         return RoomMapper.toDto(room);
     }
 
@@ -73,7 +68,6 @@ public class RoomController {
         }, () -> {
             throw new RoomNotFoundException();
         });
-
     }
 
     private boolean adminPasswordValidate(Room room) {

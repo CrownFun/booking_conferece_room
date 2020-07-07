@@ -1,5 +1,6 @@
 package pl.filewicz.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,14 +17,10 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
-
-    @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -32,17 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user.isEmpty()) {
             throw new UserNotFoundException();
         }
-        org.springframework.security.core.userdetails.User userDetails =
-                new org.springframework.security.core.userdetails.User(
-                        user.get().getLogin(),
-                        encoder.encode(user.get().getPassword()),
-                        new HashSet<>());
-        return userDetails;
+        return new org.springframework.security.core.userdetails.User(
+                user.get().getLogin(),
+                encoder.encode(user.get().getPassword()),
+                new HashSet<>());
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return passwordEncoder;
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

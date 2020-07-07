@@ -1,10 +1,16 @@
 package pl.filewicz.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.api.RoomDto;
@@ -17,23 +23,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/rooms")
+@RequiredArgsConstructor
 public class RoomControllerRest {
 
-    private RoomController roomController;
-
-    @Autowired
-    public RoomControllerRest(RoomController roomController) {
-        this.roomController = roomController;
-    }
+    private final  RoomController roomController;
 
     @PostMapping
     public ResponseEntity<RoomDto> saveRoom(@RequestBody Room room) {
 
         RoomDto roomSaved = roomController.createNewRoom(room);
-
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{name}")
@@ -58,7 +58,6 @@ public class RoomControllerRest {
                         throw new RoomNotFoundException();
                     });
     }
-
 
     @DeleteMapping("/{name}")
     public void deleteRoom(@PathVariable String name, @RequestBody Room room) {

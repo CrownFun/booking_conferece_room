@@ -1,5 +1,6 @@
 package pl.filewicz.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -18,19 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 @PropertySource("classpath:application.properties")
+@RequiredArgsConstructor
 public class UserController {
 
-
-    private UserRepository userRepository;
-    private Environment environment;
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserController(UserRepository userRepository, Environment environment, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.environment = environment;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final  UserRepository userRepository;
+    private final Environment environment;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDto createNewUser(User user) {
         checkAdminPassword(user);
@@ -81,7 +75,6 @@ public class UserController {
         );
     }
 
-
     private boolean adminPasswordValidate(User user) {
         boolean isValid = false;
         String adminPass = environment.getProperty("messageFileProperty");
@@ -90,7 +83,6 @@ public class UserController {
         }
         return isValid;
     }
-
 
     private void checkAdminPassword(User user) {
         if (adminPasswordValidate(user)) {
