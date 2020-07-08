@@ -48,7 +48,8 @@ public class UserControllerRest {
                 .path("/{login}")
                 .buildAndExpand(userSaved.getLogin())
                 .toUri();
-        return ResponseEntity.created(location).body(userSaved);
+        return new ResponseEntity<>(userSaved,HttpStatus.CREATED);
+//        return ResponseEntity.created(location).body(userSaved);
     }
 
     @DeleteMapping("/{login}")

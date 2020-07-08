@@ -21,6 +21,5 @@ public class RoomCreator {
         roomRepository.save(new Room("Large Room", "1st floor", 10, true, "22-22-22-22"));
         roomRepository.save(new Room("Medium Room", "1st floor", 6, true, null));
         roomRepository.save(new Room("Small Room", "2nd floor", 4, false, null));
-
     }
 }
