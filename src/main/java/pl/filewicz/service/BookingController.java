@@ -1,6 +1,6 @@
 package pl.filewicz.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.filewicz.api.BookingDto;
 import pl.filewicz.exceptions.RoomAvailabilityException;
@@ -19,20 +19,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
+@RequiredArgsConstructor
 public class BookingController {
 
-    private BookingRepository bookingRepository;
-    private RoomRepository roomRepository;
-    private UserRepository userRepository;
-
-    @Autowired
-    public BookingController(BookingRepository bookingRepository, RoomRepository roomRepository, UserRepository userRepository) {
-        this.bookingRepository = bookingRepository;
-        this.roomRepository = roomRepository;
-        this.userRepository = userRepository;
-    }
+    private final BookingRepository bookingRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
 
     public BookingDto createNewBooking(BookingDto bookingDto) {
 
@@ -59,9 +52,7 @@ public class BookingController {
         } else {
             throw new RoomAvailabilityException();
         }
-
         return BookingMapper.toDto(booking);
-
     }
 
     private boolean checkRoomAvailability(Booking booking) {
@@ -89,7 +80,6 @@ public class BookingController {
     private List<Booking> findBookingByRoom(Room room) {
         return bookingRepository.findByRoom(room);
     }
-
 
     public List<BookingDto> gettingBookingSchduleGreatherThanOrEqual(LocalDateTime start) {
         return bookingRepository.findByStartGreaterThanEqual(start).stream().map(BookingMapper::toDto).collect(Collectors.toList());
@@ -124,5 +114,4 @@ public class BookingController {
 
         return bookings.stream().map(BookingMapper::toDto).collect(Collectors.toList());
     }
-
 }

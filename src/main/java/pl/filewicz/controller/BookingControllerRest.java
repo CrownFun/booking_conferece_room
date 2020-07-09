@@ -1,10 +1,13 @@
 package pl.filewicz.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.api.BookingDto;
 import pl.filewicz.mapper.DateMapper;
@@ -15,17 +18,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/booking")
-
+@RequiredArgsConstructor
 public class BookingControllerRest {
 
-    private BookingController bookingController;
+    private final BookingController bookingController;
 
-    @Autowired
-    public BookingControllerRest(BookingController bookingController) {
-        this.bookingController = bookingController;
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<BookingDto> bookingRoom(@RequestBody BookingDto bookingDto) {
 
         BookingDto bookingSaved = bookingController.createNewBooking(bookingDto);
@@ -37,7 +35,7 @@ public class BookingControllerRest {
         return ResponseEntity.created(location).body(bookingSaved);
     }
 
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<BookingDto> getAllBookings(@RequestBody BookingDto bookingDto) {
 
         List<BookingDto> bookings = null;
@@ -49,15 +47,14 @@ public class BookingControllerRest {
         return bookings;
     }
 
-    @GetMapping(value = "/room", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/room")
     public List<BookingDto> getBokingBySingleRoom(@RequestBody BookingDto bookingDto) {
         return bookingController.gettingBookingScheduleForSingleRoom(bookingDto.getRoomName(), DateMapper.toLocalDateTime(bookingDto.getStartBooking()), DateMapper.toLocalDateTime(bookingDto.getEndBooking()));
     }
 
-    @GetMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/user")
     public List<BookingDto> getBookingByUser(@RequestBody BookingDto bookingDto) {
         return bookingController.gettingBookingSchduleForUser(bookingDto.getUserLogin(), DateMapper.toLocalDateTime(bookingDto.getStartBooking()), DateMapper.toLocalDateTime(bookingDto.getEndBooking()));
     }
-
 }
 
