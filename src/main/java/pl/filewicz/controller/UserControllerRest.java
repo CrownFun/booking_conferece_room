@@ -43,11 +43,11 @@ public class UserControllerRest {
     @PostMapping
     public ResponseEntity<UserDto> saveUser(@RequestBody User user) {
         UserDto userSaved = userController.createNewUser(user);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{login}")
-                .buildAndExpand(userSaved.getLogin())
-                .toUri();
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{login}")
+//                .buildAndExpand(userSaved.getLogin())
+//                .toUri();
         return new ResponseEntity<>(userSaved,HttpStatus.CREATED);
 //        return ResponseEntity.created(location).body(userSaved);
     }

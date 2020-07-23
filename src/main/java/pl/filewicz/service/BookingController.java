@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//dodac interfejsy
 @Service
 @RequiredArgsConstructor
 public class BookingController {

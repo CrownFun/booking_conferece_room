@@ -3,7 +3,6 @@ package pl.filewicz.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ public class User {
     private String surname;
     @Column(length = 100, nullable = false, unique = true)
     private String login;
-    @Length(min = 6)
+
     @Column(length = 100, nullable = false)
     private String password;
     @Transient
@@ -29,7 +28,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Booking> bookings;
 
-    public User(String name, String surname, String login, @Length(min = 6) String password) {
+    public User(String name, String surname, String login, String password) {
         this.name = name;
         this.surname = surname;
         this.login = login;
