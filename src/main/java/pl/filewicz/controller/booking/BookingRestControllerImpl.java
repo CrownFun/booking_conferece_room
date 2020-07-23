@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.booking;
 
 
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.filewicz.dto.BookingDto;
 import pl.filewicz.mapper.DateMapper;
-import pl.filewicz.service.BookingController;
+import pl.filewicz.service.booking.BookingServiceImpl;
 
 import java.net.URI;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingRestControllerImpl implements BookingRestController {
 
-    private final BookingController bookingController;
+    private final BookingServiceImpl bookingController;
 
     @Override
     @PostMapping

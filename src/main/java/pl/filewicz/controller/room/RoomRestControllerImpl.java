@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.room;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import pl.filewicz.dto.RoomDto;
 import pl.filewicz.exceptions.RoomNotFoundException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
-import pl.filewicz.service.RoomController;
+import pl.filewicz.service.room.RoomServiceImpl;
 
 import java.net.URI;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomRestControllerImpl implements RoomRestController{
 
-    private final RoomController roomController;
+    private final RoomServiceImpl roomController;
 
     @PostMapping
     public ResponseEntity<RoomDto> saveRoom(@RequestBody Room room) {

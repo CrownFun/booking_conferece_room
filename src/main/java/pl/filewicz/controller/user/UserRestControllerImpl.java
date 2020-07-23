@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import pl.filewicz.dto.UserDto;
+import pl.filewicz.exceptions.UserNotFoundException;
 import pl.filewicz.mapper.UserMapper;
 import pl.filewicz.model.User;
-import pl.filewicz.service.UserController;
+import pl.filewicz.service.user.UserServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRestControllerImpl implements UserRestController{
 
-    private final UserController userController;
+    private final UserServiceImpl userController;
 
     @GetMapping
     public List<UserDto> getUsers() {
@@ -35,7 +36,9 @@ public class UserRestControllerImpl implements UserRestController{
     @GetMapping("/{login}")
     public ResponseEntity<UserDto> getUserByLogin(@PathVariable String login) {
         Optional<User> user = userController.getUser(login);
-        return user.map(value -> ResponseEntity.ok(UserMapper.toDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
+        return user.map(value -> ResponseEntity.ok(UserMapper.toDto(value)))
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+        .orElseThrow(() -> new UserNotFoundException(login));
     }
 
     @PostMapping

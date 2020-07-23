@@ -1,4 +1,4 @@
-package pl.filewicz.service;
+package pl.filewicz.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
@@ -19,12 +19,13 @@ import java.util.stream.Collectors;
 @Service
 @PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
-public class UserController {
+public class UserServiceImpl implements UserService {
 
-    private final  UserRepository userRepository;
+    private final UserRepository userRepository;
     private final Environment environment;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     public UserDto createNewUser(User user) {
         checkAdminPassword(user);
         if (user.getPassword().length() < 6) {
@@ -44,21 +45,25 @@ public class UserController {
         return UserMapper.toDto(user);
     }
 
+    @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
     public Optional<User> getUser(String login) {
         return userRepository.findByLogin(login);
     }
 
+    @Override
     public void deleteUser(String login, User user) {
         checkAdminPassword(user);
         Optional<User> userByLogin = userRepository.findByLogin(login);
         userByLogin.ifPresent(user1 -> userRepository.deleteById(user1.getId()));
     }
 
+    @Override
     public void updateUser(String login, User user) {
         checkAdminPassword(user);
         Optional<User> userByLogin = userRepository.findByLogin(login);

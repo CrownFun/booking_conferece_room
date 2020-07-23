@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.room;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

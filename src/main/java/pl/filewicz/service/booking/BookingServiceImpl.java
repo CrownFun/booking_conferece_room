@@ -1,4 +1,4 @@
-package pl.filewicz.service;
+package pl.filewicz.service.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BookingController {
+public class BookingServiceImpl implements BookingService{
 
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
 
+    @Override
     public BookingDto createNewBooking(BookingDto bookingDto) {
 
         Optional<User> user = userRepository.findByLogin(bookingDto.getUserLogin());
@@ -73,6 +74,7 @@ public class BookingController {
     }
 
 
+    @Override
     public Optional<Booking> findBookingByUser(User user) {
         return bookingRepository.findByUser(user);
     }
@@ -81,14 +83,17 @@ public class BookingController {
         return bookingRepository.findByRoom(room);
     }
 
+    @Override
     public List<BookingDto> gettingBookingSchduleGreatherThanOrEqual(LocalDateTime start) {
         return bookingRepository.findByStartGreaterThanEqual(start).stream().map(BookingMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
     public List<BookingDto> gettingBookingScheduleForAllRooms(LocalDateTime start, LocalDateTime end) {
         return bookingRepository.findByStartBetween(start, end).stream().map(BookingMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
     public List<BookingDto> gettingBookingScheduleForSingleRoom(String roomName, LocalDateTime start, LocalDateTime end) {
 
         Optional<Room> roomByName = roomRepository.findByName(roomName);
@@ -102,6 +107,7 @@ public class BookingController {
         return bookings.stream().map(BookingMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
     public List<BookingDto> gettingBookingSchduleForUser(String userLogin, LocalDateTime start, LocalDateTime end) {
 
         Optional<User> userByLogin = userRepository.findByLogin(userLogin);
