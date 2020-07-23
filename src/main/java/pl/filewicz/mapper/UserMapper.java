@@ -1,6 +1,6 @@
 package pl.filewicz.mapper;
 
-import pl.filewicz.api.UserDto;
+import pl.filewicz.dto.UserDto;
 import pl.filewicz.model.User;
 
 public class UserMapper {

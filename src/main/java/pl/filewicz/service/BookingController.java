@@ -2,7 +2,7 @@ package pl.filewicz.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.filewicz.api.BookingDto;
+import pl.filewicz.dto.BookingDto;
 import pl.filewicz.exceptions.RoomAvailabilityException;
 import pl.filewicz.exceptions.RoomNotFoundException;
 import pl.filewicz.exceptions.UserNotFoundException;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//dodac interfejsy
 @Service
 @RequiredArgsConstructor
 public class BookingController {

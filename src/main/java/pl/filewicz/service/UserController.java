@@ -1,12 +1,11 @@
 package pl.filewicz.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.filewicz.api.UserDto;
+import pl.filewicz.dto.UserDto;
 import pl.filewicz.exceptions.*;
 import pl.filewicz.mapper.UserMapper;
 import pl.filewicz.model.User;

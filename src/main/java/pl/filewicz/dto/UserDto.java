@@ -1,4 +1,4 @@
-package pl.filewicz.api;
+package pl.filewicz.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

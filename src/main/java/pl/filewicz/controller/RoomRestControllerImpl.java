@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.filewicz.api.RoomDto;
+import pl.filewicz.dto.RoomDto;
 import pl.filewicz.exceptions.RoomNotFoundException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
-public class RoomControllerRest {
+public class RoomRestControllerImpl implements RoomRestController{
 
     private final RoomController roomController;
 
@@ -57,12 +57,6 @@ public class RoomControllerRest {
                 .orElseThrow(() -> {
                     throw new RoomNotFoundException();
                 });
-    }
-
-    @GetMapping("/hello")
-    public Room mama(){
-        return roomController.getRoom("")
-                .orElseThrow(RoomNotFoundException::new);
     }
 
     @DeleteMapping("/{name}")

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.filewicz.api.BookingDto;
+import pl.filewicz.dto.BookingDto;
 import pl.filewicz.mapper.DateMapper;
 import pl.filewicz.service.BookingController;
 
@@ -22,10 +22,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/booking")
 @RequiredArgsConstructor
-public class BookingControllerRest {
+public class BookingRestControllerImpl implements BookingRestController {
 
     private final BookingController bookingController;
 
+    @Override
     @PostMapping
     public ResponseEntity<BookingDto> bookingRoom(@RequestBody BookingDto bookingDto) {
 
@@ -38,6 +39,7 @@ public class BookingControllerRest {
         return ResponseEntity.created(location).body(bookingSaved);
     }
 
+    @Override
     @GetMapping
     public List<BookingDto> getAllBookings(@RequestBody BookingDto bookingDto) {
 
@@ -50,11 +52,13 @@ public class BookingControllerRest {
         return bookings;
     }
 
+    @Override
     @GetMapping("/room")
     public List<BookingDto> getBokingBySingleRoom(@RequestBody BookingDto bookingDto) {
         return bookingController.gettingBookingScheduleForSingleRoom(bookingDto.getRoomName(), DateMapper.toLocalDateTime(bookingDto.getStartBooking()), DateMapper.toLocalDateTime(bookingDto.getEndBooking()));
     }
 
+    @Override
     @GetMapping("/user")
     public List<BookingDto> getBookingByUser(@RequestBody BookingDto bookingDto) {
         return bookingController.gettingBookingSchduleForUser(bookingDto.getUserLogin(), DateMapper.toLocalDateTime(bookingDto.getStartBooking()), DateMapper.toLocalDateTime(bookingDto.getEndBooking()));

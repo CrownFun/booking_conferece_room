@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // dodac dokumneatcje swagger
 //dodac interfejsy @ApiOperation
 //przepisac testy na MockMvc
+// dodac readme
 @SpringBootApplication
 public class RestfulConferenceRoomSpringApplication {
 
