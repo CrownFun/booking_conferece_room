@@ -15,8 +15,7 @@ import pl.filewicz.repository.UserRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
-
+// tu trzeba zamienic na mockMvc, Rest Assured albo test rest template mozna zastoswac po uruchominiu na serwerze.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestfulConferenceRoomSpringApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RestfulConferenceRoomSpringApplicationTests {
@@ -24,13 +23,10 @@ public class RestfulConferenceRoomSpringApplicationTests {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-
     @Autowired
     private UserRepository userRepository;
 
-
     private final String rootUrl = "http://localhost:8080/api";
-
 
     @Test
     public void testCreateNewUser() {

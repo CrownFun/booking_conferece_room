@@ -28,7 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomControllerRest {
 
-    private final  RoomController roomController;
+    private final RoomController roomController;
 
     @PostMapping
     public ResponseEntity<RoomDto> saveRoom(@RequestBody Room room) {
@@ -48,15 +48,21 @@ public class RoomControllerRest {
         return roomController.getRooms();
     }
 
-//    localhost:8080/api/rooms/Large room
+    //    localhost:8080/api/rooms/Large room
     @GetMapping("/{name}")
     public ResponseEntity<RoomDto> getRoomByName(@PathVariable String name) {
         Optional<Room> roomFound = roomController.getRoom(name.trim());
         return roomFound.map(room -> ResponseEntity.ok(RoomMapper.toDto(room)))
 //                .orElseGet(() -> ResponseEntity.notFound().build());
-                    .orElseThrow(() -> {
-                        throw new RoomNotFoundException();
-                    });
+                .orElseThrow(() -> {
+                    throw new RoomNotFoundException();
+                });
+    }
+
+    @GetMapping("/hello")
+    public Room mama(){
+        return roomController.getRoom("")
+                .orElseThrow(RoomNotFoundException::new);
     }
 
     @DeleteMapping("/{name}")
@@ -65,6 +71,7 @@ public class RoomControllerRest {
         roomController.deleteRoom(roomName, room);
     }
 
+    //zmienic na return, beez wyjątku
     @PutMapping("/{name}")
     public void updateRoom(@PathVariable String name, @RequestBody Room room) {
         String roomName = name + " Room";
