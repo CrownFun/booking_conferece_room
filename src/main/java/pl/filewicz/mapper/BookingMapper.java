@@ -1,6 +1,6 @@
 package pl.filewicz.mapper;
 
-import pl.filewicz.api.BookingDto;
+import pl.filewicz.dto.BookingDto;
 import pl.filewicz.model.Booking;
 
 public class BookingMapper {

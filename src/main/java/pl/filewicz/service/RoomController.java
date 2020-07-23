@@ -1,11 +1,10 @@
 package pl.filewicz.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import pl.filewicz.api.RoomDto;
+import pl.filewicz.dto.RoomDto;
 import pl.filewicz.exceptions.AdministratorSecurityException;
 import pl.filewicz.exceptions.CreateFormFormatException;
 import pl.filewicz.exceptions.DuplicateRoomException;

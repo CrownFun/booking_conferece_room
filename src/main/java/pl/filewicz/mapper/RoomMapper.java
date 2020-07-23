@@ -1,6 +1,6 @@
 package pl.filewicz.mapper;
 
-import pl.filewicz.api.RoomDto;
+import pl.filewicz.dto.RoomDto;
 import pl.filewicz.model.Room;
 
 public class RoomMapper {
