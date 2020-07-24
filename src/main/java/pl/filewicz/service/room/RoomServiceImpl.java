@@ -1,4 +1,4 @@
-package pl.filewicz.service;
+package pl.filewicz.service.room;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
@@ -21,11 +21,12 @@ import java.util.stream.Collectors;
 @Service
 @PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
-public class RoomController {
+public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final Environment environment;
 
+    @Override
     public RoomDto createNewRoom(Room room) {
         checkAdminPassword(room);
         Optional<Room> roomByName = roomRepository.findByName(room.getName());
@@ -36,25 +37,29 @@ public class RoomController {
         try {
             roomRepository.save(room);
         } catch (Exception e) {
-            throw new CreateFormFormatException();
+            throw new CreateFormFormatException(room.getName());
         }
         return RoomMapper.toDto(room);
     }
 
+    @Override
     public List<RoomDto> getRooms() {
         return roomRepository.findAll().stream().map(RoomMapper::toDto).collect(Collectors.toList());
     }
 
+    @Override
     public Optional<Room> getRoom(String name) {
         return roomRepository.findByName(name);
     }
 
+    @Override
     public void deleteRoom(String name, Room room) {
         checkAdminPassword(room);
         Optional<Room> roomByName = roomRepository.findByName(name);
         roomByName.ifPresent(room1 -> roomRepository.deleteById(room1.getId()));
     }
 
+    @Override
     public void updateRoom(String roomName, Room room) {
         Optional<Room> roomByName = roomRepository.findByName(roomName);
         roomByName.ifPresentOrElse(room1 -> {
@@ -65,7 +70,7 @@ public class RoomController {
             room1.setPhone_number(room.getPhone_number());
             roomRepository.save(room1);
         }, () -> {
-            throw new RoomNotFoundException();
+            throw new RoomNotFoundException(roomName);
         });
     }
 
@@ -80,7 +85,7 @@ public class RoomController {
 
     private void checkAdminPassword(Room room) {
         if (adminPasswordValidate(room)) {
-            throw new AdministratorSecurityException();
+            throw new AdministratorSecurityException(room.getName());
         }
     }
 }

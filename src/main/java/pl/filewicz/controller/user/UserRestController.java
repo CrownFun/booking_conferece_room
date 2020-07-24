@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.user;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.filewicz.dto.UserDto;
 import pl.filewicz.model.User;
+import pl.filewicz.response.CustomResponse;
 
 @Api(tags = "User Controller")
 public interface UserRestController {
@@ -20,12 +21,12 @@ public interface UserRestController {
     ResponseEntity<UserDto> saveUser(@RequestBody User user);
 
     @ApiOperation(value = "add new user", notes = "save new user into database")
-    void deleteUser(@PathVariable String login, @RequestBody User user);
+    ResponseEntity<CustomResponse> deleteUser(@PathVariable String login, @RequestBody User user);
 
     @ApiOperation(value = "add new user", notes = "save new user into database")
     @ApiResponses({
             @ApiResponse(code = 200, message = "All users has been deleted"),
             @ApiResponse(code = 500, message = "Inrternal server Error"),
             @ApiResponse(code = 404, message = "Something went Wrong!")})
-    void updateUser(@PathVariable String login, @RequestBody User user);
+    ResponseEntity<CustomResponse> updateUser(@PathVariable String login, @RequestBody User user);
 }

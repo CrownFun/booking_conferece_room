@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.room;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,8 @@ import pl.filewicz.dto.RoomDto;
 import pl.filewicz.exceptions.RoomNotFoundException;
 import pl.filewicz.mapper.RoomMapper;
 import pl.filewicz.model.Room;
-import pl.filewicz.service.RoomController;
+import pl.filewicz.response.CustomResponse;
+import pl.filewicz.service.room.RoomServiceImpl;
 
 import java.net.URI;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomRestControllerImpl implements RoomRestController{
 
-    private final RoomController roomController;
+    private final RoomServiceImpl roomController;
 
     @PostMapping
     public ResponseEntity<RoomDto> saveRoom(@RequestBody Room room) {
@@ -60,18 +61,20 @@ public class RoomRestControllerImpl implements RoomRestController{
     }
 
     @DeleteMapping("/{name}")
-    public void deleteRoom(@PathVariable String name, @RequestBody Room room) {
+    public ResponseEntity<CustomResponse>  deleteRoom(@PathVariable String name, @RequestBody Room room) {
         String roomName = name + " Room";
         roomController.deleteRoom(roomName, room);
+        return new ResponseEntity<>(new CustomResponse("Room " + name + " successfully deleted"), HttpStatus.OK);
     }
 
     //zmienic na return, beez wyjątku
     @PutMapping("/{name}")
-    public void updateRoom(@PathVariable String name, @RequestBody Room room) {
+    public ResponseEntity<CustomResponse>  updateRoom(@PathVariable String name, @RequestBody Room room) {
         String roomName = name + " Room";
         if (!roomName.equals(room.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The updated object must have a name that matches the name in the resource path");
         }
         roomController.updateRoom(roomName, room);
+        return new ResponseEntity<>(new CustomResponse("Room  " + name + "successfully updated"), HttpStatus.OK);
     }
 }

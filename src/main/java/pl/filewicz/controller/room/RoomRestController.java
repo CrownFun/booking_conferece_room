@@ -1,4 +1,4 @@
-package pl.filewicz.controller;
+package pl.filewicz.controller.room;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.filewicz.dto.RoomDto;
 import pl.filewicz.model.Room;
+import pl.filewicz.response.CustomResponse;
 
 import java.util.List;
 
@@ -23,8 +24,8 @@ public interface RoomRestController {
     ResponseEntity<RoomDto> getRoomByName(@PathVariable String name);
 
     @ApiOperation(value = "delete room", notes = "get room by name")
-    void deleteRoom(@PathVariable String name, @RequestBody Room room);
+    ResponseEntity<CustomResponse>  deleteRoom(@PathVariable String name, @RequestBody Room room);
 
     @ApiOperation(value = "update room", notes = "update room")
-    void updateRoom(@PathVariable String name, @RequestBody Room room);
+    ResponseEntity<CustomResponse>  updateRoom(@PathVariable String name, @RequestBody Room room);
 }

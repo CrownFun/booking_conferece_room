@@ -3,12 +3,10 @@ package pl.filewicz;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// nowa obsługa wyjątków
-// optional w service ?
-// dodac dokumneatcje swagger
-//dodac interfejsy @ApiOperation
+
 //przepisac testy na MockMvc
 // dodac readme
+// testy do wyjatków
 @SpringBootApplication
 public class RestfulConferenceRoomSpringApplication {
 
