@@ -38,6 +38,7 @@ public class UserRestControllerImpl implements UserRestController {
 
     @GetMapping("/{login}")
     public ResponseEntity<UserDto> getUserByLogin(@PathVariable String login) {
+        log.info("Fetching user by login " + login);
         Optional<User> user = userController.getUser(login);
         return user.map(value -> ResponseEntity.ok(UserMapper.toDto(value)))
 //                .orElseGet(() -> ResponseEntity.notFound().build());
@@ -46,6 +47,7 @@ public class UserRestControllerImpl implements UserRestController {
 
     @PostMapping
     public ResponseEntity<UserDto> saveUser(@RequestBody User user) {
+        log.info("Creating User : {}", user);
         UserDto userSaved = userController.createNewUser(user);
 //        URI location = ServletUriComponentsBuilder
 //                .fromCurrentRequest()
@@ -58,12 +60,14 @@ public class UserRestControllerImpl implements UserRestController {
 
     @DeleteMapping("/{login}")
     public ResponseEntity<CustomResponse> deleteUser(@PathVariable String login, @RequestBody User user) {
+        log.info("Fetching & Deleting User with name {}", login);
         userController.deleteUser(login, user);
         return new ResponseEntity<>(new CustomResponse("User " + login + " successfully deleted"), HttpStatus.OK);
     }
 
     @PutMapping("/{login}")
     public ResponseEntity<CustomResponse> updateUser(@PathVariable String login, @RequestBody User user) {
+        log.info("Updating User with login {}", login);
         if (!login.equals(user.getLogin())) {
             throw new UserNotFoundException(login);
         }
