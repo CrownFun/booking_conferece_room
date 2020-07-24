@@ -37,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
         try {
             roomRepository.save(room);
         } catch (Exception e) {
-            throw new CreateFormFormatException();
+            throw new CreateFormFormatException(room.getName());
         }
         return RoomMapper.toDto(room);
     }
@@ -70,7 +70,7 @@ public class RoomServiceImpl implements RoomService {
             room1.setPhone_number(room.getPhone_number());
             roomRepository.save(room1);
         }, () -> {
-            throw new RoomNotFoundException();
+            throw new RoomNotFoundException(roomName);
         });
     }
 
@@ -85,7 +85,7 @@ public class RoomServiceImpl implements RoomService {
 
     private void checkAdminPassword(Room room) {
         if (adminPasswordValidate(room)) {
-            throw new AdministratorSecurityException();
+            throw new AdministratorSecurityException(room.getName());
         }
     }
 }

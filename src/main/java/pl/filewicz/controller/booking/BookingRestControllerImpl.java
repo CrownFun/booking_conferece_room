@@ -16,9 +16,6 @@ import pl.filewicz.service.booking.BookingServiceImpl;
 import java.net.URI;
 import java.util.List;
 
-
-//dodac interfejsy
-//@ApiOperation
 @RestController
 @RequestMapping("/api/booking")
 @RequiredArgsConstructor

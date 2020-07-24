@@ -33,14 +33,14 @@ public class UserServiceImpl implements UserService {
         }
         Optional<User> userByLogin = userRepository.findByLogin(user.getLogin());
         userByLogin.ifPresent(user1 -> {
-            throw new DuplicateUserException();
+            throw new DuplicateUserException(user1.getLogin());
         });
         try {
             String passwordHash = passwordEncoder.encode(user.getPassword());
             user.setPassword(passwordHash);
             userRepository.save(user);
         } catch (Exception e) {
-            throw new CreateFormFormatException();
+            throw new CreateFormFormatException(user.getPassword());
         }
         return UserMapper.toDto(user);
     }
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
                     user2.setLogin(user.getLogin());
                     userRepository.save(user2);
                 }, () -> {
-                    throw new UserNotFoundException();
+                    throw new UserNotFoundException(login);
                 }
         );
     }

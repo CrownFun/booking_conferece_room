@@ -38,10 +38,10 @@ public class BookingServiceImpl implements BookingService{
         Booking booking = new Booking();
 
         user.ifPresentOrElse(booking::setUser, () -> {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(bookingDto.getUserLogin());
         });
         room.ifPresentOrElse(booking::setRoom, () -> {
-            throw new RoomNotFoundException();
+            throw new RoomNotFoundException(bookingDto.getRoomName());
         });
 
         booking.setStart(startBooking);
@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService{
             bookingRepository.save(booking);
             room.ifPresent(room1 -> room1.addBooking(booking));
         } else {
-            throw new RoomAvailabilityException();
+            throw new RoomAvailabilityException(booking.getRoom().getName());
         }
         return BookingMapper.toDto(booking);
     }
@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService{
         if (roomByName.isPresent()) {
             bookings = bookingRepository.findByRoomAndStartBetween(roomByName.get(), start, end);
         } else {
-            throw new RoomNotFoundException();
+            throw new RoomNotFoundException(roomName);
         }
         return bookings.stream().map(BookingMapper::toDto).collect(Collectors.toList());
     }
@@ -115,7 +115,7 @@ public class BookingServiceImpl implements BookingService{
         if (userByLogin.isPresent()) {
             bookings = bookingRepository.findByUserAndStartBetween(userByLogin.get(), start, end);
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(userLogin);
         }
 
         return bookings.stream().map(BookingMapper::toDto).collect(Collectors.toList());
